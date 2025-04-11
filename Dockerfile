@@ -1,9 +1,4 @@
-# Dockerfile
-
 FROM php:8.2-fpm
-
-# Set working directory
-WORKDIR /var/www
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -16,23 +11,31 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     git \
-    nano \
     libzip-dev \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+    libmcrypt-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing app directory contents
-COPY . /var/www
+# Set working directory
+WORKDIR /var/www
+
+# Copy composer files first
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy the rest of the application
+COPY . .
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage
+RUN chown -R www-data:www-data /var/www
 
 # Expose port
 EXPOSE 8000
 
-# Start Laravel app
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Run Laravel migrations and serve
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
