@@ -4,29 +4,34 @@ services:
   mysql:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: my_laravel_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ""     
+      MYSQL_DATABASE: anime      
+      MYSQL_USER: root             
+      MYSQL_PASSWORD: ""          
     ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - "3306:3306"               
+    networks:
+      - app-network
 
   app:
-    build: .
-    container_name: laravel-app
-    ports:
-      - "8000:8000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_laravel_app
     depends_on:
       - mysql
+    ports:
+      - "8000:8000"              
     environment:
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_DATABASE: my_laravel_db
-      DB_USERNAME: user
-      DB_PASSWORD: password
+      DB_DATABASE: anime         
+      DB_USERNAME: root          
+      DB_PASSWORD:               
+    networks:
+      - app-network
 
-volumes:
-  mysql_data:
+networks:
+  app-network:
+    driver: bridge
