@@ -1,0 +1,27 @@
+# Ignore node stuff
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore Laravel vendor folder (we let Docker install it)
+vendor/
+
+# Ignore env files (handled in CI/CD or bind-mounted if needed)
+.env
+.env.*
+
+# Git stuff
+.git
+.gitignore
+
+# IDE/editor stuff
+.idea/
+.vscode/
+*.swp
+
+# OS / system files
+.DS_Store
+Thumbs.db
+
+# Log files
+storage/logs/*
