@@ -46,6 +46,17 @@ Route::get('gonres','App\Http\Controllers\Anime@gonres')->name('gonres');
 
 Route::post('insert_gonres','App\Http\Controllers\Anime@insert_gonres')->name('insert_gonres');
 
+
+
+Route::get('/check-db', function () {
+    return [
+        'host' => config('database.connections.mysql.host'),
+        'database' => config('database.connections.mysql.database'),
+        'username' => config('database.connections.mysql.username'),
+    ];
+});
+
+
 // Route::post('/insert-gonres', [YourController::class, 'insert_gonres'])->name('insert_gonres');
 
 
